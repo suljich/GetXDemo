@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
+import 'package:getx_demo/app/modules/transactions/views/options_view.dart';
 import 'package:styled_text/styled_text.dart';
 
-import 'package:getx_demo/models/account.dart';
+import 'package:getx_demo/app/modules/transactions/views/recent_activity_view.dart';
 import 'package:getx_demo/widgets/my_app_bar.dart';
-import 'package:getx_demo/widgets/options_widget.dart';
-import 'package:getx_demo/widgets/recent_activity_widget.dart';
+import 'package:getx_demo/app/modules/transactions/controllers/transactions_controller.dart';
 
-class TransactionsScreen extends StatelessWidget {
-  const TransactionsScreen({
-    super.key,
-  });
-
-  static const route = '/transactions-screen';
-
+class TransactionsView extends GetView<TransactionsController> {
+  const TransactionsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final Account account = Get.put(
-      Account(),
-    );
-    String decimalPart =
-        ((account.balance.value - account.balance.value.truncate()) * 100)
-                    .truncate() ==
-                0
-            ? '00'
-            : ((account.balance.value - account.balance.value.truncate()) * 100)
-                .truncate()
-                .toString();
     return Scaffold(
-      appBar: const MyAppBar(
-        title: 'MoneyApp',
+      appBar: MyAppBar(
+        title: 'title'.tr,
       ),
       body: Center(
         child: Stack(
@@ -47,7 +32,7 @@ class TransactionsScreen extends StatelessWidget {
                       Obx(
                         () => StyledText(
                           text:
-                              '<small>£</small><large>${account.balance.value.truncate()}</large>.<small>$decimalPart</small>',
+                              '<small>${'currency'.tr}</small><large>${controller.account.balance.truncate()}</large>.<small>${controller.decimalPart}</small>',
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -74,7 +59,7 @@ class TransactionsScreen extends StatelessWidget {
                   ),
                 ),
                 const Expanded(
-                  child: RecentActivity(),
+                  child: RecentActivityView(),
                 ),
               ],
             ),
@@ -85,7 +70,7 @@ class TransactionsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height / 5 -
                       MediaQuery.of(context).size.height / 8 / 2,
                 ),
-                const OptionsWidget(),
+                const OptionsView(),
               ],
             )
           ],

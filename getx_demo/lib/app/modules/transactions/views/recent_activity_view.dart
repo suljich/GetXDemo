@@ -1,14 +1,63 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
-import 'package:getx_demo/models/account.dart';
-import 'package:getx_demo/models/transaction.dart';
-import 'package:getx_demo/screens/transaction_details_screen.dart';
+import 'package:getx_demo/app/data/model/account.dart';
+import 'package:getx_demo/app/data/model/transaction.dart';
+import 'package:getx_demo/app/modules/transactions/controllers/transactions_controller.dart';
+import 'package:getx_demo/app/routes/app_pages.dart';
 
-class RecentActivity extends StatelessWidget {
-  const RecentActivity({
-    super.key,
-  });
+class RecentActivityView extends GetView<TransactionsController> {
+  const RecentActivityView({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(
+        20,
+      ),
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 8 / 2,
+        ),
+        SafeArea(
+          child: Text(
+            'recent activity'.tr,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        if (controller.account.transactionsMadeToday.isNotEmpty)
+          const SizedBox(
+            height: 10,
+          ),
+        if (controller.account.transactionsMadeToday.isNotEmpty)
+          Text(
+            'today'.tr.toUpperCase(),
+            style: const TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        if (controller.account.transactionsMadeToday.isNotEmpty)
+          recentActivityCard(
+            controller.account,
+            context,
+            true,
+          ),
+        if (controller.account.transactionsMadeYesterday.isNotEmpty)
+          Text(
+            'yesterday'.tr.toUpperCase(),
+            style: const TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        if (controller.account.transactionsMadeYesterday.isNotEmpty)
+          recentActivityCard(
+            controller.account,
+            context,
+            false,
+          ),
+      ],
+    );
+  }
 
   Widget recentActivityCard(
     Account account,
@@ -21,15 +70,9 @@ class RecentActivity extends StatelessWidget {
     return Column(
       children: list
           .map(
-            (
-              e,
-            ) =>
-                ListTile(
-              onTap: () => Get.to(
-                TransactionDetailsScreen(
-                  transaction: e,
-                ),
-              ),
+            (e) => ListTile(
+              onTap: () =>
+                  Get.toNamed(Routes.TRANSACTION_DETAILS, arguments: e),
               leading: Container(
                 padding: const EdgeInsets.all(
                   2,
@@ -78,59 +121,6 @@ class RecentActivity extends StatelessWidget {
             ),
           )
           .toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final Account account = Get.find();
-    return Obx(
-      () => ListView(
-        padding: const EdgeInsets.all(
-          20,
-        ),
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 8 / 2,
-          ),
-          SafeArea(
-            child: Text(
-              'Recent Activity',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          if (account.transactionsMadeToday.isNotEmpty)
-            const SizedBox(
-              height: 10,
-            ),
-          if (account.transactionsMadeToday.isNotEmpty)
-            const Text(
-              'TODAY',
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
-          if (account.transactionsMadeToday.isNotEmpty)
-            recentActivityCard(
-              account,
-              context,
-              true,
-            ),
-          if (account.transactionsMadeYesterday.isNotEmpty)
-            const Text(
-              'YESTERDAY',
-              style: TextStyle(
-                color: Colors.grey,
-              ),
-            ),
-          if (account.transactionsMadeYesterday.isNotEmpty)
-            recentActivityCard(
-              account,
-              context,
-              false,
-            ),
-        ],
-      ),
     );
   }
 }

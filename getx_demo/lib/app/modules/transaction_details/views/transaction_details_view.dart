@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
+import 'package:getx_demo/app/data/model/account.dart';
+import 'package:getx_demo/app/data/model/transaction.dart';
+import 'package:getx_demo/widgets/my_app_bar.dart';
 import 'package:styled_text/styled_text.dart';
 
-import 'package:getx_demo/models/account.dart';
-import 'package:getx_demo/models/transaction.dart';
-import 'package:getx_demo/widgets/my_app_bar.dart';
+import '../controllers/transaction_details_controller.dart';
 
-class TransactionDetailsScreen extends StatelessWidget {
-  const TransactionDetailsScreen({
-    super.key,
-    required this.transaction,
-  });
-
-  static const route = '/transaction-details-screen';
-
-  final Transaction transaction;
-
+class TransactionDetailsView extends GetView<TransactionDetailsController> {
+  const TransactionDetailsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final Account account = Get.find();
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: MyAppBar(
+        title: 'title'.tr,
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -35,17 +30,17 @@ class TransactionDetailsScreen extends StatelessWidget {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 15,
               ),
-              if (transaction.type == TransactionType.expense)
+              if (controller.transaction.type == TransactionType.expense)
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (!transaction.isSplit)
-                      shareTheCostWidget(context, account),
-                    if (!transaction.isSplit)
+                    if (!controller.transaction.isSplit.value)
+                      shareTheCostWidget(context, controller.account),
+                    if (!controller.transaction.isSplit.value)
                       SizedBox(
                         height: MediaQuery.of(context).size.height / 15,
                       ),
-                    subscriptionWidget(account),
+                    subscriptionWidget(controller.account),
                     SizedBox(
                       height: MediaQuery.of(context).size.height / 15,
                     ),
@@ -54,9 +49,9 @@ class TransactionDetailsScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () => showDialog(
                   context: context,
-                  builder: (_) => const AlertDialog(
+                  builder: (_) => AlertDialog(
                     content: Text(
-                      'Help is on the way, stay put!',
+                      'help is on the way'.tr,
                     ),
                   ),
                 ),
@@ -65,7 +60,7 @@ class TransactionDetailsScreen extends StatelessWidget {
                     left: 10,
                   ),
                   child: Text(
-                    'Something wrong? Get help',
+                    'something wrong'.tr,
                     style: TextStyle(
                       color: Theme.of(
                         context,
@@ -80,7 +75,7 @@ class TransactionDetailsScreen extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        'Transaction ID #${transaction.id}',
+                        '${'transaction id'.tr} #${controller.transaction.id}',
                         style: const TextStyle(
                           color: Colors.grey,
                         ),
@@ -100,9 +95,9 @@ class TransactionDetailsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'SUBSCRIPTION',
-          style: TextStyle(
+        Text(
+          'subscription'.tr.toUpperCase(),
+          style: const TextStyle(
             color: Colors.grey,
             fontWeight: FontWeight.w600,
           ),
@@ -114,28 +109,29 @@ class TransactionDetailsScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Repeating payment',
+              Text(
+                'repeating payment'.tr,
               ),
               Obx(
                 () => Switch(
-                  value: transaction.isRepeating.value,
+                  value: controller.transaction.isRepeating.value,
                   onChanged: (_) {
-                    transaction.isRepeating.value =
-                        !transaction.isRepeating.value;
-                    if (transaction.isRepeating.value) {
-                      account.transactions.add(
+                    controller.transaction.isRepeating.value =
+                        !controller.transaction.isRepeating.value;
+                    if (controller.transaction.isRepeating.value) {
+                      controller.account.transactions.add(
                         Transaction(
-                          title: transaction.title,
-                          type: transaction.type,
+                          title: controller.transaction.title,
+                          type: controller.transaction.type,
                           dateTime: DateTime.now(),
-                          id: '${transaction.id}v2',
-                          amount: transaction.amount,
+                          id: '${controller.transaction.id}v2',
+                          amount: controller.transaction.amount,
                         ),
                       );
                     } else {
-                      account.transactions.removeWhere(
-                        (element) => element.id == '${transaction.id}v2',
+                      controller.account.transactions.removeWhere(
+                        (element) =>
+                            element.id == '${controller.transaction.id}v2',
                       );
                     }
                   },
@@ -153,24 +149,25 @@ class TransactionDetailsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Text(
-          'SHARE THE COST',
-          style: TextStyle(
+        Text(
+          'share the cost'.tr.toUpperCase(),
+          style: const TextStyle(
             color: Colors.grey,
             fontWeight: FontWeight.w600,
           ),
         ),
         GestureDetector(
           onTap: () {
-            transaction.isSplit = true;
-            transaction.amount /= 2;
-            account.transactions.add(
+            controller.transaction.isSplit.value = true;
+            controller.transaction.amount /= 2;
+            controller.account.transactions.add(
               Transaction(
-                title: 'Split the bill - ${transaction.title}',
-                amount: transaction.amount,
+                title:
+                    '${'split the bill'.tr} - ${controller.transaction.title}',
+                amount: controller.transaction.amount,
                 type: TransactionType.topup,
-                dateTime: transaction.dateTime,
-                id: account.uidGen.v1(),
+                dateTime: controller.transaction.dateTime,
+                id: controller.account.uidGen.v1(),
               ),
             );
             Get.back();
@@ -198,8 +195,8 @@ class TransactionDetailsScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              const Text(
-                'Split this bill',
+              Text(
+                'split this bill'.tr,
               ),
             ],
           ),
@@ -232,22 +229,14 @@ class TransactionDetailsScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        const Text(
-          'Add receipt',
+        Text(
+          'add receipt'.tr,
         ),
       ],
     );
   }
 
   Column namePriceDateWidget(BuildContext context) {
-    String decimalPart =
-        ((transaction.amount - transaction.amount.truncate()) * 100)
-                    .truncate() ==
-                0
-            ? '00'
-            : ((transaction.amount - transaction.amount.truncate()) * 100)
-                .truncate()
-                .toString();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -270,7 +259,7 @@ class TransactionDetailsScreen extends StatelessWidget {
                     ),
                   ),
                   child: Icon(
-                    Transaction.icons[transaction.type],
+                    Transaction.icons[controller.transaction.type],
                     size: 50,
                     color: Colors.white,
                   ),
@@ -279,7 +268,7 @@ class TransactionDetailsScreen extends StatelessWidget {
             ),
             StyledText(
               text:
-                  '<large>${transaction.amount.truncate()}</large>.<small>$decimalPart</small>',
+                  '<large>${controller.transaction.amount.truncate()}</large>.<small>$controller.decimalPart</small>',
               tags: {
                 'large': StyledTextTag(
                   style: const TextStyle(
@@ -300,7 +289,7 @@ class TransactionDetailsScreen extends StatelessWidget {
             top: 10,
           ),
           child: Text(
-            transaction.title,
+            controller.transaction.title,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -312,7 +301,7 @@ class TransactionDetailsScreen extends StatelessWidget {
             top: 10,
           ),
           child: Text(
-            transaction.dateTime.toStandardFormat,
+            controller.transaction.dateTime.toStandardFormat,
             style: const TextStyle(
               color: Colors.grey,
               fontSize: 10,
