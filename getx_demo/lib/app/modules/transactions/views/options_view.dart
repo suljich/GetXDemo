@@ -1,27 +1,17 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
-import 'package:getx_demo/models/account.dart';
-import 'package:getx_demo/screens/loan_application_screen.dart';
-import 'package:getx_demo/screens/pay_screen.dart';
-import 'package:getx_demo/screens/top_up_screen.dart';
+import 'package:getx_demo/app/modules/transactions/controllers/transactions_controller.dart';
+import 'package:getx_demo/app/routes/app_pages.dart';
 
-class OptionsWidget extends StatelessWidget {
-  const OptionsWidget({
-    super.key,
-  });
-
+class OptionsView extends GetView<TransactionsController> {
+  const OptionsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    final Account account = Get.find();
     return Container(
-      height: MediaQuery.of(
-            context,
-          ).size.height /
-          8,
-      width: MediaQuery.of(
-        context,
-      ).size.width,
+      height: MediaQuery.of(context).size.height / 8,
+      width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(
         horizontal: 10,
       ),
@@ -31,53 +21,52 @@ class OptionsWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             customButton(
-              'Pay',
+              'pay'.tr,
               SizedBox(
-                  width: 60,
-                  height: 50,
-                  child: Stack(
-                    children: [
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.phone_iphone_outlined,
-                          size: 45,
-                        ),
+                width: 60,
+                height: 50,
+                child: Stack(
+                  children: [
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.phone_iphone_outlined,
+                        size: 45,
                       ),
-                      Align(
-                        alignment: const Alignment(
-                          0,
-                          -0.2,
-                        ),
-                        child: Icon(
-                          Icons.attach_money,
-                          size: 20,
-                          color: Theme.of(
-                            context,
-                          ).primaryColor,
-                        ),
+                    ),
+                    Align(
+                      alignment: const Alignment(
+                        0,
+                        -0.2,
                       ),
-                      Align(
-                        alignment: const Alignment(
-                          0.5,
-                          -0.2,
-                        ),
-                        child: Icon(
-                          Icons.arrow_right_alt_sharp,
-                          size: 20,
-                          color: Theme.of(
-                            context,
-                          ).primaryColor,
-                        ),
+                      child: Icon(
+                        Icons.attach_money,
+                        size: 20,
+                        color: Theme.of(
+                          context,
+                        ).primaryColor,
                       ),
-                    ],
-                  )),
-              () => Get.toNamed(
-                PayScreen.route,
+                    ),
+                    Align(
+                      alignment: const Alignment(
+                        0.5,
+                        -0.2,
+                      ),
+                      child: Icon(
+                        Icons.arrow_right_alt_sharp,
+                        size: 20,
+                        color: Theme.of(
+                          context,
+                        ).primaryColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              () => Get.toNamed(Routes.PAY),
             ),
             customButton(
-              'Top up',
+              'top up'.tr,
               SizedBox(
                 width: 50,
                 height: 50,
@@ -116,12 +105,10 @@ class OptionsWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              () => Get.toNamed(
-                TopUpScreen.route,
-              ),
+              () => Get.toNamed(Routes.TOP_UP),
             ),
             customButton(
-              'Loan',
+              'loan'.tr,
               SizedBox(
                 width: 50,
                 height: 50,
@@ -154,23 +141,7 @@ class OptionsWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              () {
-                if (account.loanDecision.value ==
-                    LoanDecisionRules.uninitiated) {
-                  Get.toNamed(
-                    LoanApplicationScreen.route,
-                  );
-                } else {
-                  showDialog(
-                    context: context,
-                    builder: (_) => const AlertDialog(
-                      content: Text(
-                        'Ooopsss, you applied before. Wait for a notification from us',
-                      ),
-                    ),
-                  );
-                }
-              },
+              () => controller.loanButtonPress(context),
             ),
           ],
         ),
