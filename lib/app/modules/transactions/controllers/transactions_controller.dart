@@ -20,7 +20,7 @@ class TransactionsController extends GetxController {
               .truncate()
               .toString();
 
-  loanButtonPress() {
+  void loanButtonPress() {
     if (account.loanDecision.value == LoanDecisionRules.uninitiated) {
       Get.toNamed(Routes.LOAN_APPLICATION);
     } else {

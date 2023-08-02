@@ -72,7 +72,7 @@ class PayController extends GetxController {
     }
   }
 
-  void payFunction() async {
+  void pay() async {
     final value = double.parse(wholeValue.value + decimalValue.value);
     account.balance.value -= value;
     account.transactions.add(

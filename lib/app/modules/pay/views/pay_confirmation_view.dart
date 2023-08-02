@@ -61,9 +61,8 @@ class PayConfirmationView extends GetView<PayController> {
                       Colors.white54,
                     ),
                   ),
-                  onPressed: controller.name.value.isEmpty
-                      ? null
-                      : controller.payFunction,
+                  onPressed:
+                      controller.name.value.isEmpty ? null : controller.pay,
                   child: Text(
                     'next'.tr,
                   ),

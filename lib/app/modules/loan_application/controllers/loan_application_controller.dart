@@ -19,7 +19,7 @@ class LoanApplicationController extends GetxController {
   final loanAmountController = TextEditingController();
   final termController = TextEditingController();
 
-  void loanLogic() async {
+  void applyForLoan() async {
     if (salaryController.text.isEmpty ||
         expensesController.text.isEmpty ||
         loanAmountController.text.isEmpty ||

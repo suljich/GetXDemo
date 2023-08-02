@@ -7,7 +7,8 @@ import 'package:getx_demo/app/data/source/random_number_data_source.dart';
 
 void injectDependencies() {
   Get.put<DataSource>(MockDataSource());
-  Get.put<AccountRepository>(AccountRepositoryImpl());
   Get.put<RandomNumberDataSource>(RandomNumberDataSource());
+
+  Get.put<AccountRepository>(AccountRepositoryImpl());
   Get.put<RandomNumberRepository>(RandomNumberRepository());
 }

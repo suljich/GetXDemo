@@ -147,7 +147,7 @@ class LoanApplicationView extends GetView<LoanApplicationController> {
                             height: 60,
                             width: 200,
                             child: ElevatedButton(
-                              onPressed: controller.loanLogic,
+                              onPressed: controller.applyForLoan,
                               child: Text(
                                 'apply_for_loan'.tr,
                                 style: const TextStyle(
